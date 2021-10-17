@@ -1,0 +1,6 @@
+env/
+data/test/
+data/train/
+data/output/
+
+*.pyc

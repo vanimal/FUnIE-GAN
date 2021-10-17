@@ -1,5 +1,5 @@
 """
-# > Various modules for handling data 
+# > Various modules for handling data
 """
 from __future__ import division
 from __future__ import absolute_import
@@ -32,11 +32,10 @@ def augment(a_img, b_img):
     # flip image up down
     if (random.random() < 0.25):
         a_img = np.flipud(a_img)
-        b_img = np.flipud(b_img) 
+        b_img = np.flipud(b_img)
     return a_img, b_img
 
-def getPaths(data_dir):
-    exts = ['*.png','*.PNG','*.jpg','*.JPG', '*.JPEG']
+def getPaths(data_dir, exts = ['*.png','*.jpg']):
     image_paths = []
     for pattern in exts:
         for d, s, fList in os.walk(data_dir):
@@ -48,7 +47,7 @@ def getPaths(data_dir):
 
 def read_and_resize(path, img_res):
     im = Image.open(path).resize(img_res)
-    if im.mode=='L': 
+    if im.mode=='L':
         copy = np.zeros((res[1], res[0], 3))
         copy[:, :, 0] = im
         copy[:, :, 1] = im
@@ -57,9 +56,22 @@ def read_and_resize(path, img_res):
     return np.array(im).astype(np.float32)
 
 def read_and_resize_pair(pathA, pathB, img_res):
-    img_A = read_and_resize(pathA, img_res)  
+    img_A = read_and_resize(pathA, img_res)
     img_B = read_and_resize(pathB, img_res)
     return img_A, img_B
+
+def read_image(path):
+  return Image.open(path)
+
+def split_chunks(img, size = 256, gutter = 8):
+  step = size - 2 * gutter
+  chunks = []
+  for i in range(0, img.height // step):
+    chunks.append([])
+    for j in range(0, img.width // step):
+      slice = img.crop((step * j, step * i, step * j + size, step * i + size))
+      chunks[i].append(np.array(slice).astype(np.float32))
+  return chunks
 
 def get_local_test_data(data_dir, img_res=(256, 256)):
     assert os.path.exists(data_dir), "local image path doesnt exist"
@@ -119,7 +131,7 @@ class DataLoader():
             batch_A = self.trainA_paths[i*batch_size:(i+1)*batch_size]
             batch_B = self.trainB_paths[i*batch_size:(i+1)*batch_size]
             imgs_A, imgs_B = [], []
-            for idx in range(len(batch_A)): 
+            for idx in range(len(batch_A)):
                 img_A, img_B = read_and_resize_pair(batch_A[idx], batch_B[idx], self.img_res)
                 if (data_augment):
                     img_A, img_B = augment(img_A, img_B)
