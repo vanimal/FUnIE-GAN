@@ -4,6 +4,13 @@
 - Simplified implementations of **UGAN** and its variants ([original repo](https://github.com/cameronfabbri/Underwater-Color-Correction))
 - Implementation: TensorFlow >= 1.11.0 and Keras >= 2.2 (Python 2.7)
 
+### Setup
+
+- Python 3.6
+- pip install -r requirements.txt
+- Install CUDA Toolkit 10.0
+- Install CUDNN 7.6.5
+
 ### Usage
 - Download the data, setup data-paths in the training scripts
 - A few saved models are provided in models/
